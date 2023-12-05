@@ -68,7 +68,7 @@ class ControllerCommunications:
     self.__callbacks = {}
     self.__MQTTConnected = False
 
-    
+  def connect(self):
     
     def handlerMQTTonConnect(client, userdata, flags, rc):
       print('>> Puzzle ID [{}] successfully connected to MQTT Broker [{}:{}]..'.format(self.puzzleID, self.mqttBroker, self.mqttPort) )
@@ -160,7 +160,6 @@ class ControllerCommunications:
         time.sleep(backOffTimer)
         
         # Incremement the backoff timer util we get over 30, then we just leave it there.
-        # This logic will actually ensure we spend one cycle over 30 (at 64, in fact). I am OK with this.
         if backOffTimer == 30:
           pass
         elif backOffTimer > 30:

@@ -74,7 +74,7 @@ from class_puzzle_contact_algo import AlgoMatchPuzzleContacts as AlgoMatchPuzzle
 from controller_communications import ControllerCommunications
 
 #FIXME - let's move this to a config file and/or command-line arguments someday
-MQTTserver = 'ms-roomcontroller.local'
+MQTTserver = 'ms-puzzle-2'
 DebugFlag  = True
 ProbeTimeout = 120
 #ProbeTimeout = 10
@@ -240,6 +240,8 @@ ReactorRoomController.RegisterCallback('command_solve',    handlerReactorRoomCon
 ReactorRoomController.RegisterCallback('command_fail',     handlerReactorRoomControllerFail)
 ReactorRoomController.RegisterCallback('ping',             handlerReactorRoomControllerPing)
 ReactorRoomController.RegisterCallback('pong',             handlerReactorRoomControllerPong)
+
+ReactorRoomController.connect()
 ########################################################
 ## (END) ROOM CONTROL COMMUNICATION -> REACTOR PUZZLE ##
 ########################################################
