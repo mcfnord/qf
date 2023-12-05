@@ -178,6 +178,8 @@ class ControllerCommunications:
     self.mqttClient.disconnect()
   #end def (disconnect)  
 
+  def PublishState(self, state):
+    pass
 
   def SendPing(self):
 
