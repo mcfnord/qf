@@ -68,13 +68,13 @@
 import os
 import time
 import threading
-import gpiozero
+from vgpiozero import gpiozero
 
 from class_puzzle_contact_algo import AlgoMatchPuzzleContacts as AlgoMatchPuzzleContacts
 from controller_communications import ControllerCommunications
 
 #FIXME - let's move this to a config file and/or command-line arguments someday
-MQTTserver = 'ms-roomcontroller.local'
+MQTTserver = 'localhost'
 DebugFlag  = True
 ProbeTimeout = 120
 #ProbeTimeout = 10
@@ -240,11 +240,33 @@ ReactorRoomController.RegisterCallback('command_solve',    handlerReactorRoomCon
 ReactorRoomController.RegisterCallback('command_fail',     handlerReactorRoomControllerFail)
 ReactorRoomController.RegisterCallback('ping',             handlerReactorRoomControllerPing)
 ReactorRoomController.RegisterCallback('pong',             handlerReactorRoomControllerPong)
+
+ReactorRoomController.connect()
 ########################################################
 ## (END) ROOM CONTROL COMMUNICATION -> REACTOR PUZZLE ##
 ########################################################
 
 
+
+def my_message_loop():
+    while True:
+        pins_file = "pins.txt"
+        # look in pins.txt and call callback if pin is listed
+        try:
+            with open(pins_file, 'r') as file:
+                first_line = file.readline().strip()
+                pinhit = int(first_line)
+
+                for iPos in range(len(ReactorPuzzle.puzzleInputPinObjects)):
+                  btn = ReactorPuzzle.puzzleInputPinObjects[iPos]
+                  if btn.pin == pinhit:
+                      btn.is_active = True
+                      ReactorPuzzle.handlerContactCallback(btn)
+                file.close()
+                os.remove(pins_file)
+
+        except:
+            pass
 
 
 
@@ -255,6 +277,9 @@ ReactorRoomController.RegisterCallback('pong',             handlerReactorRoomCon
 try:
 
   ReactorPuzzle.Reset()
+
+  my_thread = threading.Thread(target=my_message_loop)
+  my_thread.start()
 
   while True:
     ReactorPuzzle.ProcessEvents()
