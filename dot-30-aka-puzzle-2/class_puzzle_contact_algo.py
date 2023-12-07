@@ -29,7 +29,7 @@
 
 
 
-import gpiozero
+from vgpiozero import gpiozero
 import time
 
 class AlgoMatchPuzzleContacts:
@@ -43,7 +43,7 @@ class AlgoMatchPuzzleContacts:
 #        self.__delayAllowance  = DelayAllowance      # How much time is allowed to elapse (in milliseconds) between the different contact closures
         self.__callbacks       = {}        
 
-        self.__puzzleInputPinObjects     = []   #FIXME: I need to let you define these as active LO/HI        
+        self.puzzleInputPinObjects     = []   #FIXME: I need to let you define these as active LO/HI        
         self.__puzzleInputFailPinObjects = []
         self.__puzzleOutputPinObjects	 = []
 
@@ -73,7 +73,7 @@ class AlgoMatchPuzzleContacts:
             print('>> Added Puzzle Pattern Inputs #[{}], Fail Pin: [{}]'.format(inputPins, FailPin))
         #end if
     
-        self.__puzzleInputPinObjects.clear()
+        self.puzzleInputPinObjects.clear()
         
         for individualPin in inputPins:
             if ActiveLow is False:
@@ -82,9 +82,9 @@ class AlgoMatchPuzzleContacts:
                 tmpButtonObject = gpiozero.Button(individualPin, pull_up=True, bounce_time=0.5, hold_time=0.5)
             #end if
 
-            tmpButtonObject.when_pressed  = self.__handlerContactCallback 
+            tmpButtonObject.when_pressed  = self.handlerContactCallback 
 
-            self.__puzzleInputPinObjects.append(tmpButtonObject)
+            self.puzzleInputPinObjects.append(tmpButtonObject)
         #end for
 
         if FailPin is not None:
@@ -94,8 +94,8 @@ class AlgoMatchPuzzleContacts:
                 tmpButtonObject = gpiozero.Button(FailPin, pull_up=True, bounce_time=0.5, hold_time=0.5)
             #end if
 
-            #tmpButtonObject.when_pressed  = self.__handlerContactCallback 
-            tmpButtonObject.when_held = self.__handlerContactCallback
+            #tmpButtonObject.when_pressed  = self.handlerContactCallback 
+            tmpButtonObject.when_held = self.handlerContactCallback
             self.__puzzleInputFailPinObjects.append(tmpButtonObject)
         #end if
                     
@@ -173,17 +173,18 @@ class AlgoMatchPuzzleContacts:
     #end def (AddFailedOutput)
 
 
-    def __handlerContactCallback(self, btnObject):
+    def handlerContactCallback(self, btnObject):
 
         if self.__debugFlag is True:
             print('>> Input Contact Pin [{}] is ACTIVE: [{}]'.format(btnObject.pin, btnObject.is_active))
         #end if
 
         # We don't want to process any more events when we're in a solved state
-        if  ( self.__puzzleActive is True ) and ( self.__puzzleSolved is False ):
+        #if  ( self.__puzzleActive is True ) and ( self.__puzzleSolved is False ):
+        if  ( self.__puzzleSolved is False ):
             if btnObject.is_active is True:
 
-                if ( btnObject.pin is self.__puzzleInputPinObjects[self.__puzzlePatternPosition].pin ):
+                if ( btnObject.pin is self.puzzleInputPinObjects[self.__puzzlePatternPosition].pin ):
                     
                     try:  # if we don't have an output pin established for this input, we should silently fail
                         self.__puzzleOutputPinObjects[self.__puzzlePatternPosition].on()
@@ -201,12 +202,12 @@ class AlgoMatchPuzzleContacts:
                     if not (self.__puzzlePatternPosition in self.__puzzleUnfailableIndexes):
                         self.Fail()
                 #end if            
-    #end def (__handlerContactCallback)
+    #end def (handlerContactCallback)
 
 
     def __checkForSolve(self):
 
-        if self.__puzzlePatternPosition == len(self.__puzzleInputPinObjects):
+        if self.__puzzlePatternPosition == len(self.puzzleInputPinObjects):
             self.Solve()
             return True
             

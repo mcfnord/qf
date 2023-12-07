@@ -239,20 +239,26 @@ class ControllerCommunications:
 
 
   def __getTemperature(self):
+    return 0
+  '''
     with open('/sys/class/thermal/thermal_zone0/temp', 'r') as f:
       celsius = int(f.readline().strip()) / 1000;
 
       fahrenheit = math.floor((celsius * 1.8) + 32);
 
     return fahrenheit
+'''    
   #end def (__getTemperature)
   
   
   def __getUptime(self):
+    return 0
+    '''
     with open('/proc/uptime', 'r') as f:
       uptime_seconds = float(f.readline().split()[0])
               
     return uptime_seconds
+    '''
   #end def (__getUptime)
   
   
@@ -281,12 +287,12 @@ class ControllerCommunications:
   def __getRaspberryPiVersion(self):
   
     # Only Raspberry Pi's will have this, so we catch the error to mean we're running on some other platform (Simu-Puzzle perhaps?)
-#    try:
-    with open('/proc/device-tree/model', 'r') as f:
-      model = f.readline()
-      return model
+    try:
+      with open('/proc/device-tree/model', 'r') as f:
+        model = f.readline()
+        return model
         
-#    except:
-#      return 'Unknown'
+    except:
+      return 'Unknown'
       #end try
   #end def (__getRaspberryPiVersion)
