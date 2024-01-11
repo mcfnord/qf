@@ -1,0 +1,14 @@
+[Unit]
+Description=Puzzle Controller Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u /opt/questfactor/puzzle/ms_puzzle_ctrl_reactor.py
+Restart=always
+RestartSec=5
+User=pi
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
