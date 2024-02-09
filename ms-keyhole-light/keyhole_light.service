@@ -1,0 +1,14 @@
+[Unit]
+Description=Puzzle Controller Service
+After=network.target
+
+[Service]
+ExecStart=/bin/sh -c 'mosquitto_sub -v -h ms-roomcontroller.local -p 1883 -t \'CIPO/keys/#\' | /home/pi/keyhole_light/keyhole_light.sh'
+Restart=always
+RestartSec=5
+User=pi
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
